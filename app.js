@@ -271,14 +271,21 @@ function savePalette(e) {
   currentHexes.forEach((hex) => {
     colors.push(hex.innerText);
   });
-  // Generate Object
-  let paletteNr = savedPalettes.length;
+
+  let paletteNr;
+  const paletteObjects = JSON.parse(localStorage.getItem("palettes"));
+  if (paletteObjects) {
+    paletteNr = paletteObjects.length;
+  } else {
+    paletteNr = savedPalettes.length;
+  }
+
   const paletteObj = { name, colors, nr: paletteNr };
   savedPalettes.push(paletteObj);
-  // Save to localStorage
+  //Save to localStorage
   savetoLocal(paletteObj);
   saveInput.value = "";
-  // Generate the palette for library
+  //Generate the palette for Library
   const palette = document.createElement("div");
   palette.classList.add("custom-palette");
   const title = document.createElement("h4");
@@ -295,7 +302,7 @@ function savePalette(e) {
   paletteBtn.classList.add(paletteObj.nr);
   paletteBtn.innerText = "Select";
 
-  // Attach event to the btn
+  //Attach event to the btn
   paletteBtn.addEventListener("click", (e) => {
     closeLibrary();
     const paletteIndex = e.target.classList[1];
@@ -310,7 +317,7 @@ function savePalette(e) {
     resetInput();
   });
 
-  // Append to Library
+  //Append to Library
   palette.appendChild(title);
   palette.appendChild(preview);
   palette.appendChild(paletteBtn);
@@ -342,11 +349,15 @@ function closeLibrary() {
 
 function getLocal() {
   if (localStorage.getItem("palettes") === null) {
-    localStorage = [];
+    //Local Palettes
+    localPalettes = [];
   } else {
     const paletteObjects = JSON.parse(localStorage.getItem("palettes"));
+    // *2
+
+    savedPalettes = [...paletteObjects];
     paletteObjects.forEach((paletteObj) => {
-      // Generate the palette for library
+      //Generate the palette for Library
       const palette = document.createElement("div");
       palette.classList.add("custom-palette");
       const title = document.createElement("h4");
@@ -363,7 +374,7 @@ function getLocal() {
       paletteBtn.classList.add(paletteObj.nr);
       paletteBtn.innerText = "Select";
 
-      // Attach event to the btn
+      //Attach event to the btn
       paletteBtn.addEventListener("click", (e) => {
         closeLibrary();
         const paletteIndex = e.target.classList[1];
@@ -378,7 +389,7 @@ function getLocal() {
         resetInput();
       });
 
-      // Append to Library
+      //Append to Library
       palette.appendChild(title);
       palette.appendChild(preview);
       palette.appendChild(paletteBtn);
